@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="bn" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>প্রো আইএসপি - অ্যাডমিন প্যানেল</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #141218; color: #E6E1E5; margin: 0; padding: 0; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .app-container { display: flex; height: 100vh; overflow: hidden; position: relative; }
+        .sidebar { width: 260px; background: #1D1B20; border-right: 1px solid #2b2930; display: flex; flex-direction: column; position: fixed; inset-y: 0; left: 0; z-index: 40; transition: transform 0.3s ease; }
+        .main-content { flex: 1; display: flex; flex-direction: column; margin-left: 260px; height: 100vh; overflow-y: auto; background: #141218; }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body class="bg-surface dark:bg-surface-dark text-slate-900 dark:text-slate-100 h-screen flex overflow-hidden select-none">
+
+    <!-- MAIN APP CONTAINER -->
+    <div class="app-container w-full">
+        
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="sidebar bg-white dark:bg-[#1D1B20] border-r border-slate-200 dark:border-slate-800">
+            <div class="h-16 px-6 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-3" style="display: flex; align-items: center; gap: 12px;">
+                    <i class="fa-solid fa-network-wired text-primary text-xl" style="color: #6750A4; font-size: 20px;"></i>
+                    <h1 class="font-bold text-base tracking-wide" style="font-weight: 700; font-size: 16px; margin: 0;">আইএসপি অ্যাডমিন</h1>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-500 hover:text-slate-800 dark:hover:text-white text-lg" style="background:none; border:none; color:inherit; cursor:pointer;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4 space-y-1.5 hide-scrollbar" style="padding: 16px; overflow-y: auto; flex: 1;">
+                <button onclick="switchSection('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold bg-primary-container text-primary transition" style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; background: #EADDFF; color: #6750A4; border: none; cursor: pointer; margin-bottom: 6px;"><i class="fa-solid fa-chart-pie w-5"></i> ড্যাশবোর্ড</button>
+                <button onclick="switchSection('contacts')" id="nav-contacts" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition" style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #CAC4D0; background: transparent; border: none; cursor: pointer; margin-bottom: 6px;"><i class="fa-solid fa-address-book w-5"></i> কন্টাক্ট ও পেমেন্ট</button>
+                <button onclick="switchSection('shareapp')" id="nav-shareapp" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition" style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #CAC4D0; background: transparent; border: none; cursor: pointer; margin-bottom: 6px;"><i class="fa-solid fa-share-nodes w-5"></i> অ্যাপ শেয়ার লিংক</button>
+                <button onclick="switchSection('popup')" id="nav-popup" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition" style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #CAC4D0; background: transparent; border: none; cursor: pointer; margin-bottom: 6px;"><i class="fa-solid fa-image w-5"></i> পপ-আপ পোস্টার কন্ট্রোল</button>
+                <button onclick="switchSection('slider')" id="nav-slider" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition" style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #CAC4D0; background: transparent; border: none; cursor: pointer; margin-bottom: 6px;"><i class="fa-solid fa-images w-5"></i> ইমেজ স্লাইডার</button>
+                <button onclick="switchSection('playlist')" id="nav-playlist" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition" style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #CAC4D0; background: transparent; border: none; cursor: pointer; margin-bottom: 6px;"><i class="fa-solid fa-list-ul w-5"></i> M3U প্লেলিস্ট</button>
+                <button onclick="switchSection('notices')" id="nav-notices" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition" style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #CAC4D0; background: transparent; border: none; cursor: pointer; margin-bottom: 6px;"><i class="fa-solid fa-bullhorn w-5"></i> নোটিশ ও স্লাইডার</button>
+            </div>
+            <div class="p-4 border-t border-slate-200 dark:border-slate-800" style="padding: 16px; border-top: 1px solid #2b2930;">
+                <button onclick="showToast('লগআউট করা হয়েছে!')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition" style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #F2B8B5; background: transparent; border: none; cursor: pointer;"><i class="fa-solid fa-right-from-bracket w-5"></i> লগআউট</button>
+            </div>
+        </aside>
+
+        <!-- Sidebar Backdrop -->
+        <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden"></div>
+
+        <!-- CONTENT AREA -->
+        <main class="main-content bg-surface dark:bg-surface-dark w-full">
+            <!-- Top Header -->
+            <header class="h-16 px-4 md:px-6 bg-white dark:bg-[#1D1B20] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0" style="height: 64px; padding: 0 24px; background: #1D1B20; border-bottom: 1px solid #2b2930; display: flex; align-items: center; justify-content: space-between;">
+                <div class="flex items-center gap-3" style="display: flex; align-items: center; gap: 12px;">
+                    <button onclick="toggleSidebar()" class="md:hidden text-lg text-slate-600 dark:text-slate-300 p-2" style="background: none; border: none; color: #fff; cursor: pointer; font-size: 18px;">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h2 id="sectionTitle" class="text-base md:text-lg font-bold truncate" style="font-size: 18px; font-weight: 700; margin: 0;">ড্যাশবোর্ড ওভারভিউ</h2>
+                </div>
+                <div class="flex items-center gap-2 md:gap-4" style="display: flex; align-items: center; gap: 16px;">
+                    <button onclick="toggleLivePreview()" class="px-3 md:px-4 py-2 bg-primary/10 text-primary rounded-xl text-xs font-bold hover:bg-primary/20 transition flex items-center gap-2" style="background: rgba(103, 80, 164, 0.15); color: #D0BCFF; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-mobile-screen-button"></i> <span class="hidden sm:inline">লাইভ অ্যাপ প্রিভিউ</span>
+                    </button>
+                    <div class="flex items-center gap-2" style="display: flex; align-items: center; gap: 8px;">
+                        <div class="w-8 h-8 md:w-9 md:h-9 rounded-full bg-primary text-white font-bold flex items-center justify-center text-xs md:text-sm" style="width: 34px; height: 34px; border-radius: 50%; background: #6750A4; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700;">A</div>
+                        <span class="text-sm font-semibold hidden sm:inline" style="font-size: 14px; font-weight: 600;">অ্যাডমিন</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dynamic Sections -->
+            <div class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 hide-scrollbar" style="padding: 24px; overflow-y: auto;">
+                
+                <!-- 1. DASHBOARD SECTION -->
+                <div id="sec-dashboard" class="space-y-6" style="display: block;">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+                        <div class="bg-white dark:bg-[#1E1A22] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2" style="background: #1D1B20; padding: 20px; border-radius: 16px; border: 1px solid #2b2930;">
+                            <div class="flex items-center justify-between text-slate-500" style="display: flex; justify-content: space-between; color: #94a3b8;"><span class="text-xs font-semibold" style="font-size: 12px; font-weight: 600;">টোটাল ইউজার</span><i class="fa-solid fa-users text-primary" style="color: #6750A4;"></i></div>
+                            <h3 id="totalUsersCount" class="text-2xl font-bold" style="font-size: 24px; font-weight: 700; margin: 8px 0;">০ জন</h3>
+                            <span class="text-[10px] text-green-500 font-semibold" style="font-size: 10px; color: #4ade80; font-weight: 600;">গিটহাব স্ট্যাটিক মোড</span>
+                        </div>
+                        <div class="bg-white dark:bg-[#1E1A22] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2" style="background: #1D1B20; padding: 20px; border-radius: 16px; border: 1px solid #2b2930;">
+                            <div class="flex items-center justify-between text-slate-500" style="display: flex; justify-content: space-between; color: #94a3b8;"><span class="text-xs font-semibold" style="font-size: 12px; font-weight: 600;">টোটাল প্লেলিস্ট</span><i class="fa-solid fa-list text-blue-500" style="color: #60a5fa;"></i></div>
+                            <h3 id="totalPlaylistCount" class="text-2xl font-bold" style="font-size: 24px; font-weight: 700; margin: 8px 0;">০টি</h3>
+                            <span class="text-[10px] text-slate-400" style="font-size: 10px; color: #94a3b8;">সক্রিয় সার্ভার</span>
+                        </div>
+                        <div class="bg-white dark:bg-[#1E1A22] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2" style="background: #1D1B20; padding: 20px; border-radius: 16px; border: 1px solid #2b2930;">
+                            <div class="flex items-center justify-between text-slate-500" style="display: flex; justify-content: space-between; color: #94a3b8;"><span class="text-xs font-semibold" style="font-size: 12px; font-weight: 600;">টোটাল চ্যানেল</span><i class="fa-solid fa-tv text-pink-500" style="color: #f472b6;"></i></div>
+                            <h3 id="totalChannelCount" class="text-2xl font-bold" style="font-size: 24px; font-weight: 700; margin: 8px 0;">০টি</h3>
+                            <span class="text-[10px] text-green-500 font-semibold" style="font-size: 10px; color: #4ade80; font-weight: 600;">ফাইল ভিত্তিক</span>
+                        </div>
+                        <div class="bg-white dark:bg-[#1E1A22] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2" style="background: #1D1B20; padding: 20px; border-radius: 16px; border: 1px solid #2b2930;">
+                            <div class="flex items-center justify-between text-slate-500" style="display: flex; justify-content: space-between; color: #94a3b8;"><span class="text-xs font-semibold" style="font-size: 12px; font-weight: 600;">অ্যাপ ভার্সন</span><i class="fa-solid fa-code-branch text-purple-500" style="color: #c084fc;"></i></div>
+                            <h3 class="text-2xl font-bold" style="font-size: 24px; font-weight: 700; margin: 8px 0;">v1.0.0</h3>
+                            <span class="text-[10px] text-blue-500 font-semibold" style="font-size: 10px; color: #60a5fa; font-weight: 600;">লোকাল মোড</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. CONTACTS & PAYMENT SECTION -->
+                <div id="sec-contacts" class="space-y-6" style="display: none;">
+                    <div class="bg-white dark:bg-[#1E1A22] p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4" style="background: #1D1B20; padding: 24px; border-radius: 16px; border: 1px solid #2b2930;">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3" style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 class="font-bold text-sm md:text-base" style="font-weight: 700; font-size: 16px; margin: 0;">সাপোর্ট কন্টাক্ট ও পেমেন্ট নম্বর ম্যানেজমেন্ট</h3>
+                            <button onclick="saveContacts()" class="w-full sm:w-auto px-4 py-2.5 bg-primary text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2" style="background: #6750A4; color: #fff; border: none; padding: 10px 16px; border-radius: 12px; font-weight: 700; cursor: pointer;">
+                                <i class="fa-solid fa-floppy-disk"></i> পরিবর্তন সেভ করুন
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+                            <div>
+                                <label class="block text-xs font-semibold mb-1" style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">টাইপ নির্বাচন করুন</label>
+                                <select id="inputType" class="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm outline-none" style="width: 100%; padding: 10px; border-radius: 10px; background: #2b2930; color: #fff; border: 1px solid #444;">
+                                    <option value="হটলাইন সাপোর্ট">হটলাইন সাপোর্ট</option>
+                                    <option value="হোয়াটসঅ্যাপ নম্বর">হোয়াটসঅ্যাপ নম্বর</option>
+                                    <option value="বিকাশ পার্সোনাল">বিকাশ পার্সোনাল</option>
+                                    <option value="নগদ পার্সোনাল">নগদ পার্সোনাল</option>
+                                    <option value="রকেট পার্সোনাল">রকেট পার্সোনাল</option>
+                                    <option value="অফিসিয়াল ওয়েবসাইট">অফিসিয়াল ওয়েবসাইট</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold mb-1" style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">নম্বর বা লিংক লিখুন</label>
+                                <input type="text" id="inputVal" placeholder="যেমন: 01700000000" class="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm outline-none" style="width: 100%; padding: 10px; border-radius: 10px; background: #2b2930; color: #fff; border: 1px solid #444; box-sizing: border-box;">
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3" style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #2b2930;">
+                            <h4 class="font-bold text-xs uppercase text-slate-400" style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700;">সংরক্ষিত নম্বর ও কন্টাক্ট লিস্ট</h4>
+                            <div id="savedContactsList" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. APP SHARE LINK SECTION -->
+                <div id="sec-shareapp" class="space-y-6" style="display: none;">
+                    <div class="bg-white dark:bg-[#1E1A22] p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4" style="background: #1D1B20; padding: 24px; border-radius: 16px; border: 1px solid #2b2930;">
+                        <h3 class="font-bold text-sm md:text-base" style="font-weight: 700; font-size: 16px; margin: 0;">অ্যাপ শেয়ার লিংক সেটআপ</h3>
+                        <p class="text-xs text-slate-400" style="font-size: 12px; color: #94a3b8;">ইউজার অ্যাপ থেকে অন্য কারো সাথে অ্যাপ শেয়ার করলে যে লিংক পাঠানো হবে তা কনফিগার করুন।</p>
+                        <div class="space-y-3" style="margin-top: 16px;">
+                            <div>
+                                <label class="block text-xs font-semibold mb-1" style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">শেয়ার লিংকের টাইটেল বা মেসেজ</label>
+                                <input type="text" id="shareTitleInput" value="প্রো আইএসপি অফিশিয়াল অ্যাপ ডাউনলোড করুন:" class="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm outline-none" style="width: 100%; padding: 10px; border-radius: 10px; background: #2b2930; color: #fff; border: 1px solid #444; box-sizing: border-box;">
+                            </div>
+                            <div style="margin-top: 12px;">
+                                <label class="block text-xs font-semibold mb-1" style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">ডাউনলোড / প্লে-স্টোর লিংক</label>
+                                <input type="text" id="shareUrlInput" value="https://play.google.com/store/apps/details?id=com.proisp.app" class="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm outline-none" style="width: 100%; padding: 10px; border-radius: 10px; background: #2b2930; color: #fff; border: 1px solid #444; box-sizing: border-box;">
+                            </div>
+                        </div>
+                        <button onclick="saveShareLink()" class="px-5 py-2.5 bg-primary text-white rounded-xl text-xs font-bold shadow-md" style="background: #6750A4; color: #fff; border: none; padding: 10px 18px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 12px;">
+                            <i class="fa-solid fa-floppy-disk mr-1"></i> শেয়ার লিংক সেভ করুন
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4. POPUP BANNER SECTION -->
+                <div id="sec-popup" class="space-y-6" style="display: none;">
+                    <div class="bg-white dark:bg-[#1E1A22] p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4" style="background: #1D1B20; padding: 24px; border-radius: 16px; border: 1px solid #2b2930;">
+                        <h3 class="font-bold text-sm md:text-base" style="font-weight: 700; font-size: 16px; margin: 0;">অ্যাপ ওপেন পপ-আপ নোটিশ ও ব্যানার কন্ট্রোল</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+                            <div>
+                                <label class="block text-xs font-semibold mb-1" style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">পপ-আপ ব্যানার ইমেজ লিংক</label>
+                                <input type="text" id="popupImgInput" placeholder="https://example.com/banner.jpg" class="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm outline-none" style="width: 100%; padding: 10px; border-radius: 10px; background: #2b2930; color: #fff; border: 1px solid #444; box-sizing: border-box;">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold mb-1" style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">ক্লিক করলে যে লিংকে যাবে</label>
+                                <input type="text" id="popupUrlInput" placeholder="https://example.com/offer" class="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm outline-none" style="width: 100%; padding: 10px; border-radius: 10px; background: #2b2930; color: #fff; border: 1px solid #444; box-sizing: border-box;">
+                            </div>
+                        </div>
+                        <div style="margin-top: 12px;">
+                            <label class="block text-xs font-semibold mb-1" style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">জরুরি বার্তা / বিবরণ</label>
+                            <textarea id="popupDescInput" rows="2" placeholder="জরুরি আপডেট..." class="w-full p-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm outline-none" style="width: 100%; padding: 10px; border-radius: 10px; background: #2b2930; color: #fff; border: 1px solid #444; box-sizing: border-box;"></textarea>
+                        </div>
+                        <div class="flex items-center gap-3" style="display: flex; gap: 10px; margin-top: 12px;">
+                            <button onclick="savePopup()" class="px-5 py-2.5 bg-primary text-white rounded-xl text-xs font-bold shadow-md" style="background: #6750A4; color: #fff; border: none; padding: 10px 18px; border-radius: 12px; font-weight: 700; cursor: pointer;">পপ-আপ সেভ করুন</button>
+                            <button onclick="deletePopup()" class="px-5 py-2.5 bg-red-500/10 text-red-500 rounded-xl text-xs font-bold" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: none; padding: 10px 18px; border-radius: 12px; font-weight: 700; cursor: pointer;">বন্ধ করুন</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.1 IMAGE SLIDER SECTION -->
+                <div id="sec-slider" class="space-y-6" style="display: none;">
+                    <div class="bg-white dark:bg-[#1E1A22] p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4" style="background: #1D1B20; padding: 24px; border-radius: 16px; border: 1px solid #2b2930;">
+                        <h3 class="font-bold text-sm md:text-base" style="font-weight: 700; font-size: 16px; margin: 0;">একাধিক ইমেজ স্লাইডার ম্যানেজমেন্ট</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+                            <div>
+                                <label class="block text-xs font-semibold mb-1" style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">স্লাইডার ইমেজ লিংক</label>
+                                <input type="text" id="sliderImgInput" placeholder="https://example.com/slide1.jpg" class="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm outline-none" style="width: 100%; padding: 10px; border-radius: 10px; background: #2b2930; color: #fff; border: 1px solid #444; box-sizing: border-box;">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold mb-1" style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">রিডাইরেক্ট লিংক (Optional)</label>
+                                <input type="text" id="sliderUrlInput" placeholder="https://example.com/promo" class="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm outline-none" style="width: 100%; padding: 10px; border-radius: 10px; background: #2b2930; color: #fff; border: 1px solid #444; box-sizing: border-box;">
+                            </div>
+                        </div>
+                        <button onclick="addSliderImage()" class="px-5 py-2.5 bg-primary text-white rounded-xl text-xs font-bold shadow-md" style="background: #6750A4; color: #fff; border: none; padding: 10px 18px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 12px;">স্লাইডারে ইমেজ যুক্ত করুন</button>
+                        <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3" style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #2b2930;">
+                            <h4 class="font-bold text-xs uppercase text-slate-400" style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700;">সংরক্ষিত স্লাইডার ইমেজসমূহ</h4>
+                            <div id="savedSlidersList" class="grid grid-cols-1 sm:grid-cols-2 gap-3" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. PLAYLIST MANAGEMENT SECTION -->
+                <div id="sec-playlist" class="space-y-6" style="display: none;">
+                    <div class="bg-white dark:bg-[#1E1A22] p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4" style="background: #1D1B20; padding: 24px; border-radius: 16px; border: 1px solid #2b2930;">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-sm md:text-base" style="font-weight: 700; font-size: 16px; margin: 0;">M3U প্লেলিস্ট ও অটো ক্যাটেগরি সিঙ্ক</h3>
+                            <button onclick="syncPlaylist()" style="background: #6750A4; color: #fff; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer;">রিফ্রেশ ও সিঙ্ক</button>
+                        </div>
+                        <div style="margin-top: 16px;">
+                            <label class="block text-xs font-semibold mb-1" style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">M3U Playlist URL / JSON Source</label>
+                            <input type="text" id="inputM3uUrl" value="https://example.com/playlist.m3u" class="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm outline-none" style="width: 100%; padding: 10px; border-radius: 10px; background: #2b2930; color: #fff; border: 1px solid #444; box-sizing: border-box;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. NOTICES SECTION -->
+                <div id="sec-notices" class="space-y-6" style="display: none;">
+                    <div class="bg-white dark:bg-[#1E1A22] p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4" style="background: #1D1B20; padding: 24px; border-radius: 16px; border: 1px solid #2b2930;">
+                        <h3 class="font-bold text-sm md:text-base" style="font-weight: 700; font-size: 16px; margin: 0;">টেক্সট স্লাইডার / নোটিশ বোর্ড</h3>
+                        <textarea id="inputMarquee" rows="3" class="w-full p-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm outline-none" style="width: 100%; padding: 12px; border-radius: 10px; background: #2b2930; color: #fff; border: 1px solid #444; margin-top: 12px; box-sizing: border-box;">জরুরি নোটিশ: সিস্টেম মেইনটেন্যান্স চলছে।</textarea>
+                        <button onclick="saveNotice()" style="background: #6750A4; color: #fff; border: none; padding: 10px 18px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 10px;">নোটিশ সেভ করুন</button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MOCK USER APP POPUP CONTAINER -->
+    <div id="userAppPopupOverlay" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 50; align-items: center; justify-content: center;">
+        <div class="bg-white dark:bg-[#1E1A22] w-full max-w-sm rounded-3xl p-5 shadow-2xl relative space-y-4 border border-slate-200 dark:border-slate-800 text-center" style="background: #1D1B20; width: 100%; max-width: 360px; border-radius: 24px; padding: 20px; border: 1px solid #2b2930; text-align: center; position: relative;">
+            <button onclick="closeUserPopup()" style="position: absolute; top: 16px; right: 16px; background: #2b2930; border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            <div id="popupImageContainer" style="width: 100%; height: 140px; background: #2b2930; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #888;">
+                <i class="fa-solid fa-image text-3xl"></i>
+            </div>
+            <h4 id="userPopupTitleDisplay" style="font-weight: 700; font-size: 16px; margin: 10px 0 4px 0;">বিশেষ ঘোষণা</h4>
+            <p id="userPopupDescDisplay" style="font-size: 12px; color: #94a3b8; margin: 0 0 16px 0;">পপ-আপ বার্তা এখানে শো করবে...</p>
+            <button onclick="handlePopupClick()" style="width: 100%; padding: 12px; background: #6750A4; color: #fff; border: none; border-radius: 12px; font-weight: 700; cursor: pointer;">বিস্তারিত দেখুন</button>
+        </div>
+    </div>
+
+    <!-- LIVE PREVIEW MODAL -->
+    <div id="previewModal" class="fixed inset-0 bg-black/60 z-50 hidden flex justify-end" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 50; justify-content: flex-end;">
+        <div class="w-full max-w-sm bg-surface dark:bg-surface-dark h-full p-4 flex flex-col shadow-2xl relative" style="width: 100%; max-width: 340px; background: #141218; height: 100%; padding: 20px; box-sizing: border-box;">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800" style="display: flex; justify-content: space-between; border-bottom: 1px solid #2b2930; padding-bottom: 10px;">
+                <h3 style="font-weight: 700; font-size: 15px; margin: 0;">ইউজার অ্যাপ লাইভ প্রিভিউ</h3>
+                <button onclick="toggleLivePreview()" style="background: none; border: none; color: #fff; cursor: pointer; font-size: 18px;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="flex: 1; overflow-y: auto; padding-top: 16px;">
+                <div style="background: rgba(103, 80, 164, 0.15); padding: 12px; border-radius: 12px; color: #D0BCFF; font-size: 12px; margin-bottom: 12px;">
+                    <p style="font-weight: 700; margin: 0 0 4px 0;">নোটিশ বোর্ড:</p>
+                    <p id="previewNoticeText" style="margin: 0;">লোড হচ্ছে...</p>
+                </div>
+                <div style="background: #1D1B20; padding: 12px; border-radius: 12px; border: 1px solid #2b2930; margin-bottom: 12px;">
+                    <p style="font-weight: 700; font-size: 11px; color: #94a3b8; margin: 0 0 4px 0;">শেয়ার লিংক</p>
+                    <p id="previewShareText" style="font-size: 11px; color: #60a5fa; margin: 0; word-break: break-all;">লিংক...</p>
+                </div>
+                <button onclick="triggerUserAppPopup()" style="width: 100%; padding: 10px; background: #6750A4; color: #fff; border: none; border-radius: 10px; font-weight: 700; cursor: pointer;">টেস্ট পপ-আপ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" style="position: fixed; bottom: 24px; right: 24px; background: #2b2930; color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 12px; z-index: 100; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; border: 1px solid #444;">
+        সফলভাবে আপডেট করা হয়েছে!
+    </div>
+
+    <!-- Script -->
+    <script>
+        let contactsList = [
+            { id: 1, type: 'হোয়াটসঅ্যাপ নম্বর', value: '+8801700000000' }
+        ];
+        let slidersList = [];
+
+        window.onload = function() {
+            renderContacts();
+            renderSliders();
+        }
+
+        function saveNotice() {
+            showToast('নোটিশ আপডেট হয়েছে!');
+        }
+
+        function saveShareLink() {
+            showToast('শেয়ার লিংক সেভ হয়েছে!');
+        }
+
+        function savePopup() {
+            showToast('পপ-আপ সেভ হয়েছে!');
+        }
+
+        function deletePopup() {
+            showToast('পপ-আপ বন্ধ করা হয়েছে!');
+        }
+
+        function addSliderImage() {
+            const image = document.getElementById('sliderImgInput').value.trim();
+            const link = document.getElementById('sliderUrlInput').value.trim();
+            if(!image) { showToast('ইমেজের লিংক দিন!'); return; }
+            slidersList.push({ id: Date.now(), image, link });
+            document.getElementById('sliderImgInput').value = '';
+            document.getElementById('sliderUrlInput').value = '';
+            renderSliders();
+            showToast('স্লাইডার যুক্ত হয়েছে!');
+        }
+
+        function deleteSlider(id) {
+            slidersList = slidersList.filter(item => item.id !== id);
+            renderSliders();
+            showToast('ডিলিট করা হয়েছে!');
+        }
+
+        function renderSliders() {
+            const container = document.getElementById('savedSlidersList');
+            container.innerHTML = slidersList.length === 0 ? '<p class="text-xs text-slate-400">কোনো স্লাইডার নেই।</p>' : '';
+            slidersList.forEach(item => {
+                container.innerHTML += `<div style="display:flex; align-items:center; gap:10px; background:#2b2930; padding:8px; border-radius:10px;"><img src="${item.image}" style="width:50px; height:40px; border-radius:6px; object-fit:cover;"><span style="font-size:11px; flex:1; overflow:hidden; text-overflow:ellipsis;">${item.link || 'লিংক নাই'}</span><button onclick="deleteSlider(${item.id})" style="background:none; border:none; color:#f87171; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></div>`;
+            });
+        }
+
+        function triggerUserAppPopup() {
+            document.getElementById('userPopupDescDisplay').innerText = document.getElementById('popupDescInput').value || "বিশেষ ঘোষণা!";
+            document.getElementById('userAppPopupOverlay').style.display = 'flex';
+        }
+        function closeUserPopup() { document.getElementById('userAppPopupOverlay').style.display = 'none'; }
+        function handlePopupClick() { window.open(document.getElementById('popupUrlInput').value || '#', '_blank'); closeUserPopup(); }
+
+        function renderContacts() {
+            const container = document.getElementById('savedContactsList');
+            container.innerHTML = contactsList.length === 0 ? '<p class="text-xs text-slate-400">কোনো নম্বর নেই।</p>' : '';
+            contactsList.forEach(item => {
+                container.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:#2b2930; padding:8px 12px; border-radius:10px; font-size:12px;"><span style="color:#d0bcff; font-weight:600;">${item.type}: ${item.value}</span><button onclick="deleteContact(${item.id})" style="background:none; border:none; color:#f87171; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></div>`;
+            });
+        }
+
+        function saveContacts() {
+            const type = document.getElementById('inputType').value;
+            const val = document.getElementById('inputVal').value.trim();
+            if(!val) { showToast('নম্বর লিখুন!'); return; }
+            contactsList.push({ id: Date.now(), type, value: val });
+            document.getElementById('inputVal').value = '';
+            renderContacts();
+            showToast('সেভ হয়েছে!');
+        }
+
+        function deleteContact(id) {
+            contactsList = contactsList.filter(item => item.id !== id);
+            renderContacts();
+            showToast('ডিলিট হয়েছে!');
+        }
+
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            const bg = document.getElementById('sidebarBackdrop');
+            sb.classList.toggle('active');
+            if(sb.style.transform === 'translateX(0px)') {
+                sb.style.transform = 'translateX(-100%)';
+                bg.style.display = 'none';
+            } else {
+                sb.style.transform = 'translateX(0px)';
+                bg.style.display = 'block';
+            }
+        }
+
+        function switchSection(secId) {
+            const sections = ['dashboard', 'contacts', 'shareapp', 'popup', 'slider', 'playlist', 'notices'];
+            sections.forEach(s => {
+                document.getElementById(`sec-${s}`).style.display = 'none';
+                document.getElementById(`nav-${s}`).style.background = 'transparent';
+                document.getElementById(`nav-${s}`).style.color = '#CAC4D0';
+            });
+            document.getElementById(`sec-${secId}`).style.display = 'block';
+            document.getElementById(`nav-${secId}`).style.background = '#EADDFF';
+            document.getElementById(`nav-${secId}`).style.color = '#6750A4';
+
+            const titles = {
+                dashboard: 'ড্যাশবোর্ড ওভারভিউ', contacts: 'কন্টাক্ট ও পেমেন্ট ম্যানেজমেন্ট',
+                shareapp: 'অ্যাপ শেয়ার লিংক ম্যানেজমেন্ট', popup: 'পপ-আপ পোস্টার কন্ট্রোল',
+                slider: 'একাধিক ইমেজ স্লাইডার', playlist: 'M3U প্লেলিস্ট ম্যানেজমেন্ট',
+                notices: 'নোটিশ ও স্লাইডার বোর্ড'
+            };
+            document.getElementById('sectionTitle').innerText = titles[secId];
+            if (window.innerWidth < 768) toggleSidebar();
+        }
+
+        function syncPlaylist() { showToast('প্লেলিস্ট সিঙ্ক হয়েছে!'); }
+
+        function toggleLivePreview() {
+            document.getElementById('previewNoticeText').innerText = document.getElementById('inputMarquee').value;
+            document.getElementById('previewShareText').innerText = document.getElementById('shareUrlInput').value;
+            const modal = document.getElementById('previewModal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 2500);
+        }
+    </script>
+</body>
+  </html>
